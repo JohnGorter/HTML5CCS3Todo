@@ -5,33 +5,26 @@
 <head>
     
     <title>Todo Application</title>
+    <script src="http://code.jquery.com/jquery-1.11.1.js" type="text/javascript"></script>
 </head>
 
+
+
 <script>
-
-    function showDetails() {
-      var element = event.target;
-      
-    
-    document.getElementById("detailtitle").innerText = element.childNodes[0].wholeText;
-    document.getElementById("detaildescription").innerText = element.childNodes[1].innerText;
-        
-    }
-
-    function addTodo() {
-        
-        // haal de ingevulde waarden uit het formulier
-        var title = document.getElementById("title").value;
-        var description = document.getElementById("description").value;
-        
-        // genereer een nieuwe li in de ul
-        var list = document.getElementById("ullist");
-        list.innerHTML += "<li>" + title + "<span>" + description + "</span></li>";
-    }
-    
-     
-
+  $(function(){
+    $("#btnSave").click(function(){
+        $("<li>")
+            .append($("<span>").text("[X] ").click(function(){ $(this).parent().remove();$("#dt").text(""); $("#dd").text("");}))
+            .append($("<span>").addClass("t").text($("#t").val()))
+            .append($("<span>").addClass("h").text($("#d").val()))
+            .click(function(){ $("#dt").text($(".t",this).text()); $("#dd").text($(".h ",this).text());})
+            .appendTo("#u");
+    });
+  });
+  
+  
 </script>
+
 <style>
     body {
         text-align:center;
@@ -49,11 +42,12 @@
         margin-left:auto;
         margin-right:auto;
     }
-    li > span { display:none;}
-    li { cursor:pointer;}
+    .h { display:none;}
+    li { cursor:pointer; }
 </style>
 
 <body>
+    
     <h1>Todo 2015(c) John Gorter</h1>
     
     <div id="form">
@@ -61,28 +55,25 @@
         <form>
             <dl>
                 <dt>title</dt>
-                <dd><input type="text" name="title" id="title" value="" placeholder="title here.." /></dd>
+                <dd><input type="text" name="t" id="t" value="wewe" placeholder="title here.." /></dd>
                 <dt>description</dt>
-                <dd><textarea id="description" name="description">description here..</textarea>
+                <dd><textarea id="d" name="d">description here..</textarea></dd>
             </dl>
-            <input type="button" name="save" value="save" onclick="javascript:addTodo();return false;"/>
+            <input type="button" name="save" value="save" id="btnSave"/>
         </form>    
     </div>
     
     <div id="list">
         <h1>Lijst van todos</h1>
-        <ul id="ullist" onclick="javascript:showDetails();return false;">
-            <li>Hond uitlaten<span>wel even de hond goed uitlaten</span></li>
-            <li>Gras maaien<span>gras netjes maaien john</span></li>
-            <li>Muur verven<span>niet geel maar wit met sikkens verf!</span></li>
+        <ul id="u">
         </ul>
     </div>
     
     <div id="detail">
-        <h1 id="detailtitle">Muur verven</h1>
-        <p id="detaildescription">De muur in de schuur is behangen en moet nog worden geverfd.</p>
+        <h1 id="dt">Muur verven</h1>
+        <p id="dd">De muur in de schuur is behangen en moet nog worden geverfd.</p>
     </div>
-
+  
 </body>
 
 </html>
