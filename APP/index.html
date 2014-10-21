@@ -12,17 +12,36 @@
 
 <script>
   $(function(){
+    
+    $.ajax({ url:'/todos', dataType:'JSON', success: function(data){
+        for (todo in data)
+            addTodo(data[todo].title, data[todo].description);
+    }});
+    
     $("#btnSave").click(function(){
-        $("<li>")
-            .append($("<span>").text("[X] ").click(function(){ $(this).parent().remove();$("#dt").text(""); $("#dd").text("");}))
-            .append($("<span>").addClass("t").text($("#t").val()))
-            .append($("<span>").addClass("h").text($("#d").val()))
-            .click(function(){ $("#dt").text($(".t",this).text()); $("#dd").text($(".h ",this).text());})
-            .appendTo("#u");
+        var t = $("#t").val();
+        var d = $("#d").val();
+        addTodo(t, d);
+        
+        $.ajax({ url:'/todos',
+               type:'post',
+               data: JSON.stringify({ title: t, description: d}),
+               contentType: "application/json; charset=utf-8",
+               success: function(data){
+                    $("#notification").fadeIn().delay(5000).fadeOut();
+               }});
     });
   });
   
   
+  function addTodo(title, description) {
+    $("<li>")
+            .append($("<span>").text("[X] ").click(function(){ $(this).parent().remove();$("#dt").text(""); $("#dd").text("");}))
+            .append($("<span>").addClass("t").text(title))
+            .append($("<span>").addClass("h").text(description))
+            .click(function(){ $("#dt").text($(".t",this).text()); $("#dd").text($(".h ",this).text());})
+            .appendTo("#u");
+  }
 </script>
 
 <style>
@@ -44,11 +63,14 @@
     }
     .h { display:none;}
     li { cursor:pointer; }
+    #notification { background-color:gray;border:1px solid black;}
 </style>
 
 <body>
     
     <h1>Todo 2015(c) John Gorter</h1>
+    
+    <div id="notification" style="display:none">A new todo is added on the server</div>
     
     <div id="form">
         <h1>Voeg een todo toe</h1>
