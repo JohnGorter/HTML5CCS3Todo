@@ -13,8 +13,8 @@
       var element = event.target;
       
     
-    document.getElementById("detailtitle").innerText = element.innerText;
-    document.getElementById("detaildescription").innerText = "";
+    document.getElementById("detailtitle").innerText = element.childNodes[0].wholeText;
+    document.getElementById("detaildescription").innerText = element.childNodes[1].innerText;
         
     }
 
@@ -26,7 +26,7 @@
         
         // genereer een nieuwe li in de ul
         var list = document.getElementById("ullist");
-        list.innerHTML += "<li>" + title + "</li>";
+        list.innerHTML += "<li>" + title + "<span>" + description + "</span></li>";
     }
     
      
@@ -49,12 +49,15 @@
         margin-left:auto;
         margin-right:auto;
     }
+    li > span { display:none;}
+    li { cursor:pointer;}
 </style>
 
 <body>
     <h1>Todo 2015(c) John Gorter</h1>
     
     <div id="form">
+        <h1>Voeg een todo toe</h1>
         <form>
             <dl>
                 <dt>title</dt>
@@ -69,9 +72,9 @@
     <div id="list">
         <h1>Lijst van todos</h1>
         <ul id="ullist" onclick="javascript:showDetails();return false;">
-            <li>Hond uitlaten</li>
-            <li>Gras maaien</li>
-            <li>Muur verven</li>
+            <li>Hond uitlaten<span>wel even de hond goed uitlaten</span></li>
+            <li>Gras maaien<span>gras netjes maaien john</span></li>
+            <li>Muur verven<span>niet geel maar wit met sikkens verf!</span></li>
         </ul>
     </div>
     
