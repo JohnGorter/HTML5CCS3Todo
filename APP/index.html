@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 
 <html>
-    
-<head>
-    
-    <title>Todo Application</title>
-    <script src="http://code.jquery.com/jquery-1.11.1.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <head>
+        
+        <title>Todo Application</title>
+        <script src="http://code.jquery.com/jquery-1.11.1.js" type="text/javascript"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript"></script>
+        
+        
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/styles.css" />
 
-</head>
-
-
-
+        
+    </head>
 <script>
   $(function(){
     
@@ -22,26 +23,36 @@
     
     $("span", $("#titlefield")).hide();
     $("span", $("#descrfield")).hide();
-
     $("#t").keyup(function(){validateInput($("#t"), $("#titlefield"))});
     $("#d").keyup(function(){validateInput($("#d"), $("#descrfield"))});
+    
+    $('#myModal').on('hidden.bs.modal', function (e) {
+        $("#t").val("");
+        $("#d").val("");
+        $("#titlefield").removeClass("has-error");
+        $("span", $("#titlefield")).hide();
+        $("#descrfield").removeClass("has-error");
+        $("span", "#descrfield").hide();
+    });
     
     $("#btnSave").click(function(){
         var t = $("#t");
         var d = $("#d");
     
         if (!validateInput(t, $("#titlefield"))) return;
-        if (!validateInput(d, $("#descrField"))) return;
+        if (!validateInput(d, $("#descrfield"))) return;
         
         addTodo(t.val(), d.val());
         
         $.ajax({ url:'/todos',
                type:'post',
-               data: JSON.stringify({ title: t, description: d}),
+               data: JSON.stringify({ title: t.val(), description: d.val()}),
                contentType: "application/json; charset=utf-8",
                success: function(data){
                     $("#notification").fadeIn().delay(5000).fadeOut();
                }});
+        
+        $('#myModal').modal('hide');
     });
   });
   
@@ -67,61 +78,44 @@
   }
 </script>
 
-<style>
-    body {
-        text-align:center;
-        font-variant: small-caps;
-        }
-    #form, #list, #detail {
-        box-shadow: #000 5px 5px 15px;
-        border:1px solid black;
-        border-radius:15px;
-        text-align:left;
-        background:linear-gradient(yellow, white);
-        padding:10px;
-    }
-    #form { margin-bottom:20px;}
-    .h { display:none;}
-    li { cursor:pointer; }
-    ul { list-style: none;}
-    #notification { border:1px solid black;margin-top:20px;}
-    
-</style>
-
 <body>
-    
-    <h1 class="visible-sm visible-xs">Todo 2015(c) <small>John Gorter - Mobile</small> </h1>
-    <h1 class="hidden-sm hidden-xs">Todo 2015(c) <small>John Gorter - Desktop</small></h1>
-    
+    <nav class="navbar navbar-default navbar-inverse" role="navigation">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Todo Application</a>
+          </div>
+      
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+              <li class="active"><a href="/index.html">Home</a></li>
+              <li><a href="/about.html">About</a></li>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
     
     <div class="container">
-        
+
+        <div class="jumbotron">
+            <h1 class="visible-sm visible-xs">Todo 2015(c) <br/><small>John Gorter - Mobile</small> </h1>
+            <h1 class="hidden-sm hidden-xs">Todo 2015(c) <br/><small>John Gorter - Desktop</small></h1>
+        </div>
     
         <div class="row">
             <div class="col-xs-12 col-md-4">
-                <div id="form">
-                    <h1>Voeg een todo toe</h1>
-                    <form class="form-horizontal" role="form">
-                        <div class="form-group has-feedback" id="titlefield">
-                            <label for="t" class="col-sm-2 control-label">Title</label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" id="t" placeholder="Title" name="t">
-                              <span class='glyphicon glyphicon-remove form-control-feedback'></span>
-                            </div>
-                        </div>
-                        <div class="form-group" id="descrfield">
-                            <label for="d" class="col-sm-2 control-label">Description</label>
-                            <div class="col-sm-10">
-                              <textarea id="d" name="d" class="form-control" rows="3"></textarea>
-                           </div>
-                        </div>
-                         <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                               <input type="button" name="save" value="save" id="btnSave" class="btn btn-primary"/>
-                            </div>
-                        </div>
-                    </form>    
-                </div>
+                    <div id="form">
+                        <h1>Voeg een todo toe</h1>
+               <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                Add a new todo
+                </button>
+                    </div>
             </div>
             <div class="col-xs-6 col-md-4">
                 <div id="list">
@@ -140,10 +134,47 @@
         </div>
         <div class="row">
             <div class="col-xs-12 col-md-12">
-                <div id="notification" style="display:none" class="bg-success">A new todo is added on the server</div>
+                <div id="notification" style="display:none" class="alert alert-success" role="alert">
+                     <strong>Success!</strong> A new todo is added on the server</div>
             </div>
         </div>
     </div>
+    
+    <div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+        <div class="modal-body">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group has-feedback" id="titlefield">
+                                    <label for="t" class="col-sm-2 control-label">Title</label>
+                                    <div class="col-sm-10">
+                                      <input type="text" class="form-control" id="t" placeholder="Title" name="t">
+                                      <span class='glyphicon glyphicon-remove form-control-feedback'></span>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="descrfield">
+                                    <label for="d" class="col-sm-2 control-label">Description</label>
+                                    <div class="col-sm-10">
+                                      <textarea id="d" name="d" class="form-control" rows="3"></textarea>
+                                   </div>
+                                </div>
+                                 
+                                 
+                            </form>
+        </div>
+        <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" name="save" value="save" id="btnSave" class="btn btn-primary">Save changes</button>
+              </div>
+        
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
 </body>
 
 </html>

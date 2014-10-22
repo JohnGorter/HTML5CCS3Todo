@@ -1,15 +1,20 @@
 var http = require('http');
 var express = require('express');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var less = require('less');
+var lessMiddleware = require('less-middleware');
 
 var app = express();
 var todo = [];
 
 todo.push({ id:0, title:"hond uitlaten", description:"wel laten poepen"});
 
+app.use(lessMiddleware(__dirname + '/app'));
 app.use(express.static(__dirname + "/app"));
+
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.json());
+
 
 app.get("/todos", function(req, res){
   res.setHeader("content-type", "application/json");
