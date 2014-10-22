@@ -49,7 +49,7 @@
                data: JSON.stringify({ title: t.val(), description: d.val()}),
                contentType: "application/json; charset=utf-8",
                success: function(data){
-                    $("#notification").fadeIn().delay(5000).fadeOut();
+                    $("#notification").html("<strong>Success!</strong>Added the todo").fadeIn().delay(5000).fadeOut();
                }});
         
         $('#myModal').modal('hide');
@@ -70,7 +70,14 @@
 
   function addTodo(title, description) {
     $("<li>")
-            .append($("<span class='btn btn-danger btn-xs' style='margin-right:20px;margin-bottom:10px;'>").text("DEL").click(function(){ $(this).parent().remove();$("#dt").text(""); $("#dd").text("");}))
+            .append($("<span class='btn btn-danger btn-xs' style='margin-right:20px;margin-bottom:10px;'>").text("DEL").click(function(){
+                $.ajax({ url:'/todos?title=' + title, type:"delete", success: function(data){
+                    $("#notification").html("<strong>Success!</strong>Deleted the todo").fadeIn().delay(5000).fadeOut();
+                }});
+                $(this).parent().remove();
+                $("#dt").text("");
+                $("#dd").text("");
+            }))
             .append($("<span>").addClass("t").text(title))
             .append($("<span>").addClass("h").text(description))
             .click(function(){ $("#dt").text($(".t",this).text()); $("#dd").text($(".h ",this).text());})
@@ -127,8 +134,8 @@
             <div class="col-xs-6 col-md-4">
                 <div id="detail">
                     <h1>Details</h1>
-                    <b id="dt">Muur verven</b><br/>
-                    <p id="dd">De muur in de schuur is behangen en moet nog worden geverfd.</p>
+                    <b id="dt"></b><br/>
+                    <p id="dd"></p>
                 </div>
             </div>
         </div>
