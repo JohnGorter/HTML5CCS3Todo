@@ -120,51 +120,49 @@
             <ul class="nav navbar-nav navbar-right">
               <li class="active"><a href="/index.html">Home</a></li>
               <li><a href="/about.html">About</a></li>
+            </ul>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
     
-    <div class="container">
-
-        <header class="jumbotron">
-            <h1 class="visible-sm visible-xs">Todo 2015(c) <br/><small>John Gorter - Mobile</small> </h1>
+    <div class="container1">
+        <header class="jumbotron block">
+            <h1 class="visible-sm visible-xs">Todo 2015(c)</h1>
             <h1 class="hidden-sm hidden-xs">Todo 2015(c) <br/><small>John Gorter - Desktop</small></h1>
         </header>
-    
-        <div class="row">
-            <div class="col-xs-12 col-md-4">
-                    <div id="form">
-                        <h1>Voeg een todo toe</h1>
+    </div>
+    <div class="container2">
+        <div id="form" class="block">
+               <h1>Voeg een todo toe</h1>
                <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">
                 Add a new todo
                 </button>
-                    </div>
-            </div>
-            <div class="col-xs-6 col-md-4">
-                <div id="list">
+         </div>
+         <div class="container3">
+                <div id="list" class="block">
                     <h1>Lijst van todos</h1>
                     <ul id="u">
                     </ul>
                 </div>
-            </div>
-            <div class="col-xs-6 col-md-4">
-                <div id="detail">
+                <div id="detail" class="block">
                     <h1>Details</h1>
                     <b id="dt"></b><br/>
                     <p id="dd"></p>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-md-12">
-                <div id="notification" style="display:none" class="alert alert-success" role="alert">
-                     <strong>Success!</strong> A new todo is added on the server</div>
-            </div>
         </div>
     </div>
-    <footer>
-        Todo App: Written in JavaScript and HTML5 using Komodo. All rights reserved 2015(c)
-    </footer>
+    
+    <div class="container1">
+        <div id="notification" style="display:none" class="block alert alert-success" role="alert">
+             <strong>Success!</strong> A new todo is added on the server
+        </div>
+    </div>
+
+    <div class="container4">
+        <footer style="flex:1">
+            Todo App: Written in JavaScript and HTML5 using Komodo. All rights reserved 2015(c)
+        </footer>
+    </div>
     
     <div class="modal fade" id="myModal">
     <div class="modal-dialog">
@@ -179,7 +177,7 @@
                                     <label for="t" class="col-sm-2 control-label">Title</label>
                                     <div class="col-sm-10">
                                       <input type="text" class="form-control"
-                                             id="t" placeholder="Title" name="t" required pattern="blablablablabla" maxlength="50">
+                                             id="t" placeholder="Title" name="t" required maxlength="50">
                                       <span class='glyphicon glyphicon-remove form-control-feedback'></span>
                                     </div>
                                 </div>

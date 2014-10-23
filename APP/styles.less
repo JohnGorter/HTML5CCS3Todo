@@ -83,7 +83,7 @@
 /* Element styles */
 li  			{ 	.pointer(); 	}
 ul  			{ 	.liststyle()	}
-footer                  {       font-size:11px; margin-top:20px;padding:10px;color:#515151;background-color:#333;.border(); }
+footer                  {       font-size:11px; margin-top:20px;padding:10px;color:#515151;background-color:#333;.border(5px);}
 body		    {
         			.text(center);
         			.fontstyle();
@@ -100,20 +100,44 @@ header > h1 { font-family: john};
   					.background();
         			.margin(10px, 20px);
         			.shadow(box, @boxshadow);
-        			.border();
+        			.border(15px);
+                                height:200px;
     			}
 
 /* Id styles */
 #errors { border:2px solid #cc2222; background-color:#ccaaaa;border-radius:5px;}
 #notification 	{ 	.margin(20px, 0px); 	} 
-#form 		 	{ 	.margin(0px, 20px); 	}
 #form, #list, #detail
     			{
+                               transition: all 1s ease-in-out 100ms;
         			.shadow(box, @boxshadow);
         			.border(15px);
         			.text(left);
-  					.gradientfill(@secondcolor, @maincolor);
+  				.gradientfill(@secondcolor, @maincolor);
         			.padding();
+                                position:relative;left:0px;
+                                transform:perspective(500px);
     			}
+                        
+// new stuff                        
+a.navbar-inverse, a.navbar-brand { color:white !IMPORTANT;text-shadow: 3px 3px 10px #fff;}
     
+.container1 { display:flex;width:960px;margin-left:auto; margin-right:auto;}
+.container2 { display:flex;width:960px;margin-left:auto; margin-right:auto;}
+.container3 { display:flex;flex:2;}
+.container4 { display:flex;width:100%;}
+.block      { flex:1;margin:10px;}
 
+@-webkit-keyframes john {
+    0% { opacity:0.9; transform:rotatez(-2deg);}
+    100% { opacity:1; transform:rotatez(2deg);}
+}
+
+            
+@media screen and (max-width:960px){
+    .container1 { width:100%;-webkit-animation:john 0.5s infinite alternate ease-in-out;}
+    .container2 { flex-direction:column;width:100%;}
+    #detail { transform:perspective(500px) rotateY(-15deg);left:-15px}
+    #list {transform:perspective(500px) rotateY(15deg);left:15px;}
+    
+}
