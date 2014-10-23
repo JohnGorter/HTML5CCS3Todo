@@ -75,13 +75,21 @@
 	text-align:@align;
 }
 
+@font-face{
+    font-family: 'john';
+    src:url('john.otf.ttf');
+    
+}
 /* Element styles */
 li  			{ 	.pointer(); 	}
 ul  			{ 	.liststyle()	}
+footer                  {       font-size:11px; margin-top:20px;padding:10px;color:#515151;background-color:#333;.border(); }
 body		    {
         			.text(center);
         			.fontstyle();
     			}
+                        
+header > h1 { font-family: john};
     
 /* Class styles */
 .h 				{ 	.hide(); 		}
@@ -96,6 +104,7 @@ body		    {
     			}
 
 /* Id styles */
+#errors { border:2px solid #cc2222; background-color:#ccaaaa;border-radius:5px;}
 #notification 	{ 	.margin(20px, 0px); 	} 
 #form 		 	{ 	.margin(0px, 20px); 	}
 #form, #list, #detail

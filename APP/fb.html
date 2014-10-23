@@ -1,0 +1,30 @@
+<!doctype html>
+    <html>
+        <head>
+            
+        </head>
+        <style>
+           .container1 { display:flex;width:960px;border:1px solid green;margin-left:auto; margin-right:auto;height:100px;}
+           .container2 { display:flex;width:960px;border:1px solid green;margin-left:auto; margin-right:auto;height:400px;}
+           .container3 { display:flex;flex:2;}
+           .block      { flex:1;background-color:coral;border:1px solid black;margin:10px;padding:10px;}
+            
+            @media screen and (max-width:960px){
+                .container1 { width:100%;}
+                .container2 { flex-direction:column;width:100%;}
+            }
+            
+        </style>
+        <body>
+            <div class="container1">
+                <header class="block">Jumbotron</header>
+            </div>
+            <div class="container2">
+                <div class="block">1</div>
+                <div class="container3">
+                    <div class="block">2</div>
+                    <div class="block">3 </div>
+                </div>
+            </div>
+        </body>
+    </html>
