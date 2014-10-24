@@ -15,12 +15,20 @@
         
     </head>
 <script>
+    var tododb = [];
+    
   $(function(){
 
-    $.ajax({ url:'/todos', dataType:'JSON', success: function(data){
-        for (todo in data)
-            addTodo(data[todo].title, data[todo].description);
-    }});
+   // $.ajax({ url:'/todos', dataType:'JSON', success: function(data){
+   //     for (todo in data)
+   //         addTodo(data[todo].title, data[todo].description);
+   // }});
+    if('todos' in  window.localStorage) {
+        tododb = JSON.parse(window.localStorage["todos"]);
+        for(t in tododb){
+            addTodo(tododb[t].title, tododb[t].description);
+        }
+    }
     
     $("span", $("#titlefield")).hide();
     $("span", $("#descrfield")).hide();
@@ -47,14 +55,17 @@
         
         addTodo(t.val(), d.val());
         
-        $.ajax({ url:'/todos',
-               type:'post',
-               data: JSON.stringify({ title: t.val(), description: d.val()}),
-               contentType: "application/json; charset=utf-8",
-               success: function(data){
-                    $("#notification").html("<strong>Success!</strong>Added the todo").fadeIn().delay(5000).fadeOut();
-               }});
+       // $.ajax({ url:'/todos',
+       //        type:'post',
+       //        data: JSON.stringify({ title: t.val(), description: d.val()}),
+       //        contentType: "application/json; charset=utf-8",
+       //        success: function(data){
+       //             $("#notification").html("<strong>Success!</strong>Added the todo").fadeIn().delay(5000).fadeOut();
+       //        }});
         
+       tododb.push({ title: t.val(), description: d.val()});
+       window.localStorage["todos"] = JSON.stringify(tododb);
+              
         $('#myModal').modal('hide');
     });
   });
@@ -87,12 +98,15 @@
   function addTodo(title, description) {
     $("<li>")
             .append($("<span class='btn btn-danger btn-xs' style='margin-right:20px;margin-bottom:10px;'>").text("DEL").click(function(){
-                $.ajax({ url:'/todos?title=' + title, type:"delete", success: function(data){
-                    $("#notification").html("<strong>Success!</strong>Deleted the todo").fadeIn().delay(5000).fadeOut();
-                }});
+              //  $.ajax({ url:'/todos?title=' + title, type:"delete", success: function(data){
+              //      $("#notification").html("<strong>Success!</strong>Deleted the todo").fadeIn().delay(5000).fadeOut();
+              //  }});
                 $(this).parent().remove();
                 $("#dt").text("");
                 $("#dd").text("");
+              
+              
+             
             }))
             .append($("<span>").addClass("t").text(title))
             .append($("<span>").addClass("h").text(description))
