@@ -1,11 +1,11 @@
 CACHE MANIFEST
-// version 1.2
+// version 1.9
 
 CACHE:
 /index.html
 /jq.js
-/bootstrap.js
-/bootstrap.css
+/bootstrap.js 
+/bootstrap.css  
 /styles.css
 /john.otf.ttf
 /jt.jpg

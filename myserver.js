@@ -26,17 +26,14 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 
 app.delete("/todos", function(req, res){
+  console.log("DELETE TODO: " + req.query.title); 
   todoClass.findOneAndRemove({ title:req.query.title}, function (){
     res.end("todo deleted");
     });
 });
 
-app.get("/application.manifest", function(req, res){
-  res.setHeader("content-type", "text/cache-manifest");
-  res.writeFile("application.cachemanifest");
-});
-  
 app.get("/todos", function(req, res){
+  console.log("GETTING ALL TODOS"); 
   res.setHeader("content-type", "application/json");
   todoClass.find({}, function(err, data){
       res.end(JSON.stringify(data));
@@ -44,8 +41,10 @@ app.get("/todos", function(req, res){
 });
 
 app.post("/todos", function(req, res){
+  console.log("POSTING TODO: " + req.body.title); 
   var newtodo = new todoClass({ title:req.body.title, description:req.body.description});
   newtodo.save(function(){
+    console.log("posted a new todo"); 
   res.end("todo added");
   });
 });
@@ -54,6 +53,6 @@ setInterval(function(){
   io.emit('test', { data: 'tick lunchtime...' });
   }, 1000);
 
-http.listen(1337);
+app.listen(1337);
 
 console.log('Server running at http://127.0.0.1:1337/');

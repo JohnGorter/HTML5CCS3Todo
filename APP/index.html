@@ -17,34 +17,32 @@
     </head>
 <script>
     var tododb = [];
+    var deltodos = [];
+
+    var online = true;
     
   $(function(){
-    
-    $("body")[0].style.backgroundColor = 'red';
-    if (window.navigator.onLine) {
-        $("body")[0].style.backgroundColor = 'green';
-    }
+ 
+    online = window.navigator.onLine;
     window.addEventListener("online", function(){
-        $("body")[0].style.backgroundColor = 'green';
-        });
+        online = true;
+        syncTodos();
+    });
     window.addEventListener("offline", function(){
-        $("body")[0].style.backgroundColor = 'red';
-        });
+        online = false;
+    });
 
     $("#export").click(function(){
             var blob = new Blob([JSON.stringify(tododb)], { type: 'text/json'});
-
             var link = $("#exporta")[0];
             link.href = window.URL.createObjectURL(blob);
             link.innerText = "export";
             link.download = "export.txt";
             link.style.display = "none"
             $("#exporta")[0].click();
-            
     });
     
-    
-   /* window.navigator.geolocation.getCurrentPosition(function(pos){
+    /* window.navigator.geolocation.getCurrentPosition(function(pos){
         
         var map = new google.maps.Map($("#map")[0], {
             zoom: 15,
@@ -64,9 +62,8 @@
     );
     */
    
-    $("#list")[0].ondragover = function () { return false;}
-    $("#list")[0].ondragend = function () { return false;}
-    
+    $("#list")[0].ondragover = function () { return false;};
+    $("#list")[0].ondragend = function () { return false;};
     $("#list")[0].ondrop = function (event) {
         event.stopPropagation();
         event.preventDefault();
@@ -82,13 +79,15 @@
         }
         reader.readAsText(event.dataTransfer.files[0]);
         return false;
+    };
+    
+    if (online) {
+        $.ajax({ url:'/todos', dataType:'JSON', success: function(data){
+        for (todo in data)
+            addTodo(data[todo].title, data[todo].description);
+        }});
     }
     
-    
-   // $.ajax({ url:'/todos', dataType:'JSON', success: function(data){
-   //     for (todo in data)
-   //         addTodo(data[todo].title, data[todo].description);
-   // }});
     if('todos' in  window.localStorage) {
         tododb = JSON.parse(window.localStorage["todos"]);
         for(t in tododb){
@@ -119,9 +118,13 @@
         
         addTodo(t.val(), d.val());
         
-        tododb.push({ title: t.val(), description: d.val()});
-        window.localStorage["todos"] = JSON.stringify(tododb);
-              
+        var todo = { title: t.val(), description: d.val()};
+        if (online) {
+            $.ajax({ url:'/todos', type:"post", data: todo, content:"application/json", success: function(data){ $("#notification").html("<strong>Success!</strong>Added the todo").fadeIn().delay(5000).fadeOut();}});
+        } else {
+            tododb.push(todo);
+            window.localStorage["todos"] = JSON.stringify(tododb);
+        }
         $('#myModal').modal('hide');
     });
   });
@@ -144,9 +147,14 @@
   function addTodo(title, description) {
     $("<li>")
             .append($("<span class='btn btn-danger btn-xs' style='margin-right:20px;margin-bottom:10px;'>").text("DEL").click(function(){
-              //  $.ajax({ url:'/todos?title=' + title, type:"delete", success: function(data){
-              //      $("#notification").html("<strong>Success!</strong>Deleted the todo").fadeIn().delay(5000).fadeOut();
-              //  }});
+                if (online) {
+                    $.ajax({ url:'/todos?title=' + title, type:"delete", success: function(data){
+                        $("#notification").html("<strong>Success!</strong>Deleted the todo").fadeIn().delay(5000).fadeOut();
+                    }});
+                } else {
+                    deltodos.push({title:title, description:description});
+                    window.localStorage["deltodos"] = JSON.stringify(deltodos);
+                }
                 $(this).parent().remove();
                 $("#dt").text("");
                 $("#dd").text("");
@@ -163,6 +171,27 @@
             .click(function(){ $("#dt").text($(".t",this).text()); $("#dd").text($(".h ",this).text());})
             .appendTo("#u");
   }
+  
+  
+  // we were offline, became online..
+  function syncTodos(){
+    console.log("syncing todos...");
+    //delete all todos that were deleted locally
+    for (d in deltodos) {
+         $.ajax({ url:'/todos?title=' + deltodos[d].title, type:"delete", success: function(data){ }});
+    }
+    deltodos = [];
+    window.localStorage["deltodos"] = JSON.stringify(deltodos);
+    
+    //add all todos that were added locally
+    for (d in tododb) {
+         $.ajax({ url:'/todos', type:"post", data: tododb[d], content:"application/json", success: function(data){}});
+    }
+    tododb = [];
+    window.localStorage["todos"] = JSON.stringify(tododb);
+    
+    };
+  
 </script>
 
 <body>
