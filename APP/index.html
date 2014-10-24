@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 
-<html>
+<html manifest="application.manifest">
+    
     <head>
         
         <title>Todo Application</title>
         
-        <script src="http://code.jquery.com/jquery-1.11.1.js" type="text/javascript"></script>
-        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.7.2.js" type="text/javascript"></script>
+        <script src="/jq.js" type="text/javascript"></script>
+        <script src="/bootstrap.js" type="text/javascript"></script>
+        <script src="/modernizr.js" type="text/javascript"></script>
         
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="bootstrap.css">
         <link rel="stylesheet" type="text/css" href="/styles.css" />
 
         
@@ -18,7 +19,72 @@
     var tododb = [];
     
   $(function(){
+    
+    $("body")[0].style.backgroundColor = 'red';
+    if (window.navigator.onLine) {
+        $("body")[0].style.backgroundColor = 'green';
+    }
+    window.addEventListener("online", function(){
+        $("body")[0].style.backgroundColor = 'green';
+        });
+    window.addEventListener("offline", function(){
+        $("body")[0].style.backgroundColor = 'red';
+        });
 
+    $("#export").click(function(){
+            var blob = new Blob([JSON.stringify(tododb)], { type: 'text/json'});
+
+            var link = $("#exporta")[0];
+            link.href = window.URL.createObjectURL(blob);
+            link.innerText = "export";
+            link.download = "export.txt";
+            link.style.display = "none"
+            $("#exporta")[0].click();
+            
+    });
+    
+    
+   /* window.navigator.geolocation.getCurrentPosition(function(pos){
+        
+        var map = new google.maps.Map($("#map")[0], {
+            zoom: 15,
+            center: new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude),
+            mapTypeControl: false,
+            navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+        
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude),
+            map: map, 
+            title:"You are here! (at least within a "+pos.coords.accuracy+" meter radius)"
+        });
+        
+        }, function(){}
+    );
+    */
+   
+    $("#list")[0].ondragover = function () { return false;}
+    $("#list")[0].ondragend = function () { return false;}
+    
+    $("#list")[0].ondrop = function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        var reader = new FileReader();
+        reader.onload = function(event){
+            tododb = JSON.parse(event.target.result);
+            window.localStorage['todos'] = JSON.stringify(tododb);
+            $("#list li").remove();
+            for(t in tododb){
+              addTodo(tododb[t].title, tododb[t].description);
+        }
+            
+        }
+        reader.readAsText(event.dataTransfer.files[0]);
+        return false;
+    }
+    
+    
    // $.ajax({ url:'/todos', dataType:'JSON', success: function(data){
    //     for (todo in data)
    //         addTodo(data[todo].title, data[todo].description);
@@ -33,8 +99,6 @@
     $("span", $("#titlefield")).hide();
     $("span", $("#descrfield")).hide();
     $("#errors").text("").hide();
-   // $("#t").keyup(function(){validateInput($("#t"), $("#titlefield"))});
-   // $("#d").keyup(function(){validateInput($("#d"), $("#descrfield"))});
     
     $('#myModal').on('hidden.bs.modal', function (e) {
         $("#t").val("");
@@ -55,16 +119,8 @@
         
         addTodo(t.val(), d.val());
         
-       // $.ajax({ url:'/todos',
-       //        type:'post',
-       //        data: JSON.stringify({ title: t.val(), description: d.val()}),
-       //        contentType: "application/json; charset=utf-8",
-       //        success: function(data){
-       //             $("#notification").html("<strong>Success!</strong>Added the todo").fadeIn().delay(5000).fadeOut();
-       //        }});
-        
-       tododb.push({ title: t.val(), description: d.val()});
-       window.localStorage["todos"] = JSON.stringify(tododb);
+        tododb.push({ title: t.val(), description: d.val()});
+        window.localStorage["todos"] = JSON.stringify(tododb);
               
         $('#myModal').modal('hide');
     });
@@ -83,16 +139,6 @@
        $("span", container).show();
     }
     return element[0].validity.valid;
-
-/*    var value = $(element).val();
-    $(container).removeClass("has-error");
-    $("span", container).hide();
-    if (!value) {
-       $(container).addClass("has-error");
-       $("span", container).show();
-       return false;
-    }
-    return true; */
   }
 
   function addTodo(title, description) {
@@ -105,8 +151,12 @@
                 $("#dt").text("");
                 $("#dd").text("");
               
-              
-             
+                var todo = null;
+                for(t in tododb) if (tododb[t].title == title) { todo = tododb[t]; }
+                if (todo) {
+                    tododb.splice(tododb.indexOf(todo), 1);
+                    window.localStorage["todos"] = JSON.stringify(tododb);
+                }
             }))
             .append($("<span>").addClass("t").text(title))
             .append($("<span>").addClass("h").text(description))
@@ -157,6 +207,7 @@
                     <h1>Lijst van todos</h1>
                     <ul id="u">
                     </ul>
+                    <button id="export">export list to file</button><a href="" id="exporta"></a>
                 </div>
                 <div id="detail" class="block">
                     <h1>Details</h1>
@@ -165,6 +216,12 @@
                 </div>
         </div>
     </div>
+    
+    <!-- <div class="container1">
+        <div id="map" style="border:10px solid yellow;height:400px;width:400px;">
+            drdf
+        </div>
+    </div> -->
     
     <div class="container1">
         <div id="notification" style="display:none" class="block alert alert-success" role="alert">

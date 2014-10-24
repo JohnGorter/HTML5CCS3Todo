@@ -1,0 +1,17 @@
+CACHE MANIFEST
+// version 1.2
+
+CACHE:
+/index.html
+/jq.js
+/bootstrap.js
+/bootstrap.css
+/styles.css
+/john.otf.ttf
+/jt.jpg
+
+NETWORK:
+*
+
+FALLBACK:
+/about.html /offline.html
